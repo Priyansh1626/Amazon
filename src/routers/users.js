@@ -12,6 +12,11 @@ router.get("/isuser", auth, (req, res) => {
     }
 })
 
+
+router.get("/", (req, res) => {
+    res.send("i got my page here").status(200);
+})
+
 //client secret(google)
 // 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
 //client id
