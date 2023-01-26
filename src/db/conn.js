@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
-const mongoURI = "mongodb://localhost:27017/Ecommerce";
-// const mongoURI = process.env.DB_CONNECT;
+// const AmazonProduct = require("../modals/products");
+// const mongoURI = "mongodb://127.0.0.1:27017/ecommerce";
+require("dotenv").config();
+const mongoURI = process.env.DB_CONNECT;
 
-const connectToMongo = () => {
-    mongoose.connect(mongoURI, {
-        useNewUrlParser: true,
-        // useCreateIndex: true,
-        useUnifiedTopology: true
-    }, () => {
-        console.log("connected to DB");
-    })
-}
-
-connectToMongo();
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true },
+    (err) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log("connected to DB");
+        }
+    }
+)

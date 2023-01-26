@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 
-const newUserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -25,30 +25,42 @@ const newUserSchema = new mongoose.Schema({
         min: [5, "min length 5 required"]
     },
     phone: {
-        type: Number,
+        type: String,
         required: true,
         min: [10, "number must be of minimum 10 numbers"],
         unique: [true, "Phone number is already present"]
     },
-    locality: {
-        type: String,
-        required: true
+    isSeller: {
+        type: Boolean,
+        default: false
     },
-    city: {
-        type: String,
-        required: true
-    },
-    state: {
-        type: String,
-        required: true
-    },
+    address: [
+        {
+            locality: {
+                type: String,
+                required: true
+            },
+            city: {
+                type: String,
+                required: true
+            },
+            state: {
+                type: String,
+                required: true
+            },
+        }
+    ],
     tokens: [{
         token: {
             type: String,
         },
         date: {
-            type: Date,
-            default: Date.now
+            type: String,
+            default: function () {
+                const timeElapsed = Date.now()
+                const today = new Date(timeElapsed);
+                return today.toUTCString();
+            }
         }
     }],
     orders: [{
@@ -62,17 +74,72 @@ const newUserSchema = new mongoose.Schema({
             type: Array
         },
         date: {
-            type: Date,
-            default: Date.now
+            type: String,
+            default: function () {
+                const timeElapsed = Date.now()
+                const today = new Date(timeElapsed);
+                return today.toUTCString();
+            }
         }
     }],
+    seller: {
+        Sname: {
+            type: String
+        },
+        Semail: {
+            type: String
+        },
+        Sphone: {
+            type: Number
+        },
+        Sadhar: {
+            type: String,
+        },
+        Saddress: {
+            locality: {
+                type: String
+            },
+            city: {
+                type: String
+            },
+            state: {
+                type: String
+            }
+        },
+        Sproducts: [
+            {
+                id: {
+                    type: Number,
+                },
+                title: {
+                    type: String
+                },
+                price: {
+                    type: Number
+                },
+                img: {
+                    type: String
+                },
+                rating: {
+                    type: Number
+                },
+                category: {
+                    type: String
+                }
+            }
+        ]
+    },
     date: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: function () {
+            const timeElapsed = Date.now()
+            const today = new Date(timeElapsed);
+            return today.toUTCString();
+        }
     }
 });
 
-newUserSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function () {
     try {
         const user = this
         const token = jwt.sign({ _id: user._id.toString() }, process.env.SECRET_KEY);
@@ -85,13 +152,13 @@ newUserSchema.methods.generateAuthToken = async function () {
 }
 
 // securing password
-newUserSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();
 });
 
-const AmazonUser = new mongoose.model("AmazonUser", newUserSchema);
+const AmazonUser = new mongoose.model("AmazonUser", userSchema);
 
 module.exports = AmazonUser;

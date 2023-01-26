@@ -6,26 +6,28 @@ const stripe = require("stripe")("sk_test_51M5AaMSDw0brp7tFH3gYpHAigumglzzGjjZ7F
 
 router.post("/checkout/payment/create", async (req, res) => {
     const total = req.query.total;
-
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: total,
-        currency: "inr",
-    });
-
-    res.status(201).send({
-        clientSecret: paymentIntent.client_secret,
-    })
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: total,
+            currency: "inr",
+        });
+        res.status(201).send({
+            clientSecret: paymentIntent.client_secret,
+        })
+    } catch (error) {
+        res.send({ message: "Stripe cannot generate clientSecret" }).status(500);
+    }
 })
 
-router.post("/orderstored", auth, async (req, res) => {
+router.post("/storeorder", auth, async (req, res) => {
     const user = req.user;
-    const { id, basket, amount } = req.body;
+    const { id, order, amount } = req.body;
     try {
         AmazonUser.findOne({ email: user.email }, async (err, user) => {
             if (user) {
-                user.orders = user.orders.concat({ paymentId: id, order: basket, amount: amount });
+                user.orders = user.orders.concat({ paymentId: id, order: order, amount: amount });
                 const myOrder = await user.save();
-                res.send({ message: "order stored successfully" }).status(201);
+                res.send({ user: user }).status(201);
             }
             else {
                 res.send({ message: `order not stored , ${err}` }).status(401);
@@ -36,20 +38,20 @@ router.post("/orderstored", auth, async (req, res) => {
     }
 })
 
-router.get("/getorders", auth, async (req, res) => {
-    const user = req.user;
-    try {
-        AmazonUser.findOne({ email: user.email }, async (err, user) => {
-            if (user) {
-                res.send({ orders: user.orders }).status(201);
-            }
-            else {
-                res.send({ message: err }).status(201);
-            }
-        })
-    } catch (e) {
-        res.send({ message: `no user found` }).status(401);
-    }
-})
+// router.get("/getorders", auth, async (req, res) => {
+//     const user = req.user;
+//     try {
+//         AmazonUser.findOne({ email: user.email }, async (err, user) => {
+//             if (user) {
+//                 res.send({ orders: user.orders }).status(201);
+//             }
+//             else {
+//                 res.send({ message: err }).status(201);
+//             }
+//         })
+//     } catch (e) {
+//         res.send({ message: `no user found` }).status(401);
+//     }
+// })
 
 module.exports = router;
