@@ -40,6 +40,20 @@ router.post("/api/getproductwithid", auth, async (req, res) => {
     }
 });
 
+router.post("/api/getsubcategory", async (req, res) => {
+    try {
+        const items = await AmazonProduct.find({ category: req.body.category });
+
+        const subCategory = [...new Set(items.map((elm) => {
+            return (elm.subCategory);
+        }))];
+        res.send({ subCategory: subCategory, category: req.body.category }).status(200);
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 router.patch("/api/sellerdetails", auth, async (req, res) => {
     const { name, email, phone, adhar, locality, city, state, isSeller } = req.body;
     const user = req.user;
@@ -70,12 +84,12 @@ router.patch("/api/sellerdetails", auth, async (req, res) => {
 });
 
 router.post("/api/sellerproducttosell", auth, async (req, res) => {
-    const { title, price, img, rating, category, id ,subCategory } = req.body;
+    const { title, price, img, rating, category, id, subCategory } = req.body;
     const user = req.user;
     try {
         AmazonUser.findOne({ email: user.email }, async (err, user) => {
             if (user) {
-                user.seller.Sproducts = user.seller.Sproducts.concat({ id: id, title: title, price: price, img: img, rating: rating, category: category , subCategory:subCategory });
+                user.seller.Sproducts = user.seller.Sproducts.concat({ id: id, title: title, price: price, img: img, rating: rating, category: category, subCategory: subCategory });
 
                 const myProduct = await user.save();
                 res.send({ user: user }).status(201);

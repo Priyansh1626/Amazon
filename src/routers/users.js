@@ -88,7 +88,7 @@ router.post("/auth/signup", (req, res) => {
             if (user) {
                 res.send({ message: "User already regestered" });
             }
-            else {  
+            else {
                 try {
                     const user = new AmazonUser({ name, email, password, phone, address: [{ locality, city, state }] });
                     // creating token for user  
