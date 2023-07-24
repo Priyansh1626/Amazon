@@ -29,10 +29,7 @@ router.post("/auth/signin", (req, res) => {
                 const isMatch = await bcrypt.compare(password, user.password);
                 const token = await user.generateAuthToken();
                 // creating cookie
-                res.cookie("jwt", token, { httpOnly: true, SameSite: false });
-                // console.log(req.cookies.jwt);
-
-                // console.log("Login Token", token);
+                res.cookie('jwt', token, { httpOnly: true, SameSite: true });
 
                 if (isMatch) {
                     res.send({ message: "Signin successful", user: user, cookie: req.cookies.jwt });
