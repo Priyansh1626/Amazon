@@ -10,8 +10,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 app.use(cors({
-    // origin: ["http://localhost:3000"],
-    origin: ["https://64c2ba486c111400702880e5--roaring-crumble-48345d.netlify.app"],
+    origin: ["http://localhost:3000"],
+    // origin: ["https://64c2ba486c111400702880e5--roaring-crumble-48345d.netlify.app"],
     credentials: true,
 }));
 

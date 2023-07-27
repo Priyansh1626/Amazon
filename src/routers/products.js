@@ -9,6 +9,7 @@ router.post("/api/newproduct", auth, async (req, res) => {
     try {
         const product = new AmazonProduct(req.body);
         const createProduct = await product.save();
+        console.log(createProduct);
         res.send({ product: createProduct, user: user }).status(201);
     } catch (error) {
         res.send(error).status(400);
@@ -24,7 +25,7 @@ router.get("/api/getallproducts", async (req, res) => {
     }
 });
 
-router.post("/api/getproductwithid", auth, async (req, res) => {
+router.post("/api/getproductwithid", async (req, res) => {
     try {
         // console.log(req.body);
         const product = await AmazonProduct.findOne({ id: req.body.id })
