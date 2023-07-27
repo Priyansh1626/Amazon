@@ -11,7 +11,7 @@ const cors = require("cors");
 
 app.use(cors({
     // origin: ["http://localhost:3000"],
-    origin: ["https://64c2b80939ba2603fabacb88--relaxed-biscochitos-11cb16.netlify.app/"],
+    origin: ["https://64c2b80939ba2603fabacb88--relaxed-biscochitos-11cb16.netlify.app"],
     credentials: true,
 }));
 
