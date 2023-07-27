@@ -30,6 +30,7 @@ router.post("/auth/signin", (req, res) => {
                 const token = await user.generateAuthToken();
                 // creating cookie
                 res.cookie('jwt', token, { httpOnly: true, SameSite: true });
+                console.log(token);
 
                 if (isMatch) {
                     res.send({ message: "Signin successful", user: user, cookie: req.cookies.jwt });

@@ -45,18 +45,6 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-const AmazonProduct = new mongoose.model("AmazonProduct", productSchema);
-
-// const newP = new AmazonProduct({
-//     id:"111",
-//     title: "new2",
-//     price: "4000",
-//     img: "n.sf",
-//     rating: "5",
-//     category: "no"
-//     subCategory:"etc"
-// });
-
-// newP.save();
+const AmazonProduct = new mongoose.model("AmazonProduct", productSchema);   
 
 module.exports = AmazonProduct;
